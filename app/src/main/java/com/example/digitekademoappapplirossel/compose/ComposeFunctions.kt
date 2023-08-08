@@ -8,17 +8,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import com.example.digitekademoappapplirossel.interfaces.WebviewPositionCallback
 import com.google.accompanist.web.AccompanistWebViewClient
 
 @Composable
 fun DisplayWebViewBody(
     webViewClient: AccompanistWebViewClient,
-    body: String = "",
-    positionCallback: WebviewPositionCallback
+    body: String = ""
 ) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        ArticleWebView(webViewClient, body, positionCallback)
+        ArticleWebView(webViewClient, body)
         HandlePaywall()
     }
 }
