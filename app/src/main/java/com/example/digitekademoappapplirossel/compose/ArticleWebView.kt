@@ -38,7 +38,7 @@ fun ArticleWebView(
                 state.value?.let {
                     val position = layoutCoordinates.positionInWindow().y.absoluteValue.toInt()
 
-                    it.evaluateJavascript("console.log(" + position + ")") { }
+                    it.evaluateJavascript("console.log(\"Absolute position of webview: " + position + "\")") { }
                 }
             }
         },
