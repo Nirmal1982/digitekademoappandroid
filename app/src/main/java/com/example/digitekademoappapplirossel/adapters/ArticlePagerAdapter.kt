@@ -1,5 +1,7 @@
 package com.example.digitekademoappapplirossel.adapters
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +19,7 @@ class ArticlePagerAdapter(private val articles: List<String>) : RecyclerView.Ada
         val itemView = inflater.inflate(R.layout.viewpager_item, parent, false)
         val webViewClient = getWebViewClient()
 
-        return ArticleViewHolder(itemView, webViewClient)
+        return ArticleViewHolder(itemView, webViewClient, context)
     }
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
@@ -28,14 +30,27 @@ class ArticlePagerAdapter(private val articles: List<String>) : RecyclerView.Ada
     override fun getItemCount(): Int = articles.size
 }
 
-class ArticleViewHolder(itemView: View, private val webViewClient: AccompanistWebViewClient) : RecyclerView.ViewHolder(itemView) {
+class ArticleViewHolder(itemView: View, private val webViewClient: AccompanistWebViewClient, private val context: Context) : RecyclerView.ViewHolder(itemView) {
     private val composeView = itemView.findViewById<ComposeView>(R.id.composeView)
 
     fun bind(bodyHTML: String) {
+        val webviewPositionScript = loadWebviewPositionScript(context) // Load the JavaScript code from asset
         composeView.setContent {
-            DisplayWebViewBody(webViewClient, bodyHTML)
+            DisplayWebViewBody(webViewClient, bodyHTML, webviewPositionScript)
         }
     }
+
+    private fun loadWebviewPositionScript(context: Context): String {
+        try {
+            val assetManager = context.assets
+            val inputStream = assetManager.open("webview_position.js")
+            return inputStream.bufferedReader().use { it.readText() }
+        } catch (e: Exception) {
+            Log.e("AssetManager", "Error loading webview_position.js: ${e.message}")
+            return ""
+        }
+    }
+
 }
 
 private fun getWebViewClient() : AccompanistWebViewClient {

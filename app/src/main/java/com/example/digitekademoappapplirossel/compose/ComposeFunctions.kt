@@ -13,10 +13,11 @@ import com.google.accompanist.web.AccompanistWebViewClient
 @Composable
 fun DisplayWebViewBody(
     webViewClient: AccompanistWebViewClient,
-    body: String = ""
+    body: String = "",
+    webviewPositionScript: String
 ) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        ArticleWebView(webViewClient, body)
+        ArticleWebView(webViewClient, body, webviewPositionScript)
         HandlePaywall()
     }
 }

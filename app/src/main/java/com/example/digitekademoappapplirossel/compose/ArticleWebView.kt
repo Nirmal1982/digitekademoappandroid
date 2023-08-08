@@ -19,10 +19,7 @@ const val MIMETYPE = "text/html; charset=UTF-8"
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun ArticleWebView(
-    webViewClient: AccompanistWebViewClient,
-    bodyHTML: String,
-) {
+fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, webviewPositionScript: String) {
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
     val state = rememberWebViewStateWithHTMLData(
@@ -36,9 +33,9 @@ fun ArticleWebView(
         modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
             saveWebView.let { state ->
                 state.value?.let {
-                    val position = layoutCoordinates.positionInWindow().y.absoluteValue.toInt()
-
-                    it.evaluateJavascript("console.log(\"Absolute position of webview: " + position + "\")") { }
+                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y.absoluteValue})"
+                    val fullScript = "$webviewPositionScript\n$positionScript"
+                    it.evaluateJavascript(fullScript) { }
                 }
             }
         },
