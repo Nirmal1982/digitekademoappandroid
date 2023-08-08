@@ -3,14 +3,7 @@ package com.example.digitekademoappapplirossel
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import com.google.accompanist.web.AccompanistWebViewClient
+import androidx.viewpager2.widget.ViewPager2
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webview: WebView
@@ -224,10 +217,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val composeView = findViewById<ComposeView>(R.id.composeView)
-        composeView.setContent {
-            DisplayWebViewBody(bodyHTML)
-        }
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val articleList = listOf(bodyHTML, bodyHTML, bodyHTML)
+
+        viewPager.adapter = ArticlePagerAdapter(articleList)
+
         /* webview = findViewById(R.id.idDtkWebView)
 
          webview.apply {
@@ -235,26 +229,5 @@ class MainActivity : AppCompatActivity() {
              isScrollContainer=true
              loadUrl("https://mockup.digiteka.com/mockup_rossel_android.html")
          }*/
-    }
-
-    @Composable
-    private fun DisplayWebViewBody(body: String = "") {
-         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-             ArticleWebView(getWebViewClient(), body)
-             HandlePaywall()
-         }
-    }
-
-    @Composable
-    private fun HandlePaywall() {
-        Text(text = "Paywall")
-    }
-
-    private fun getWebViewClient() : AccompanistWebViewClient {
-        return object : AccompanistWebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-            }
-        }
     }
 }
