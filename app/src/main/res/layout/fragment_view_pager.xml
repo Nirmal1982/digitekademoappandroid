@@ -1,90 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
-    <!-- fake banner ad top -->
+    tools:context=".fragments.ViewPagerFragment">
+
     <LinearLayout
-        android:id="@+id/llAdBannerTop"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/banner_ad_top_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="fake banner ad !" />
-    </LinearLayout>
-
-    <!-- fake menu horizontal -->
-    <HorizontalScrollView
-        android:id="@+id/breadcrumbScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"
-        android:scrollbars="none"
+        android:id="@+id/breadcrumbContainer"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <LinearLayout
-            android:id="@+id/breadcrumbContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-            <TextView
-                android:id="@+id/breadcrumb_top_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="fake breadcrumb text !" />
-        </LinearLayout>
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/articleDetailNestedScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/breadcrumbContainer"
+        app:layout_constraintBottom_toTopOf="@id/breadcrumbContainer2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    </HorizontalScrollView>
-
-    <!-- container web view -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/detailWebViewContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="WebViewLayout">
-
-        <WebView
-            android:id="@+id/detailWebView"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_weight="6"/>
+    </androidx.core.widget.NestedScrollView>
 
-        <View
-            android:id="@+id/fading_detailWebview"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@android:color/black"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/detailWebView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_second_articles"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_aussi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_a_la_une"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/breadcrumbContainer2"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
