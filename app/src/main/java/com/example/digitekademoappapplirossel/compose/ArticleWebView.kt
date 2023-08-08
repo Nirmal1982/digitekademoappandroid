@@ -1,4 +1,4 @@
-package com.example.digitekademoappapplirossel
+package com.example.digitekademoappapplirossel.compose
 
 import android.annotation.SuppressLint
 import android.util.Xml
@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import com.example.digitekademoappapplirossel.interfaces.WebviewPositionCallback
 import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
@@ -19,7 +20,11 @@ const val MIMETYPE = "text/html; charset=UTF-8"
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String){
+fun ArticleWebView(
+    webViewClient: AccompanistWebViewClient,
+    bodyHTML: String,
+    positionCallback: WebviewPositionCallback
+) {
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
     val state = rememberWebViewStateWithHTMLData(
@@ -31,10 +36,13 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String){
 
     WebView(
         modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
-            saveWebView?.let { state ->
+            saveWebView.let { state ->
                 state.value?.let {
+                    val position = layoutCoordinates.positionInWindow().y.absoluteValue.toInt()
+                    positionCallback.onPositionChanged(position)
+
                     it.evaluateJavascript(
-                        "scrollTo(" + layoutCoordinates.positionInWindow().y.absoluteValue + ")") { }
+                        "console.log(Webview position -> " + position + ")") { }
                 }
             }
         },

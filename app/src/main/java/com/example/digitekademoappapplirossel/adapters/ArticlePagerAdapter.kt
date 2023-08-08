@@ -1,4 +1,4 @@
-package com.example.digitekademoappapplirossel
+package com.example.digitekademoappapplirossel.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,16 +6,19 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.digitekademoappapplirossel.compose.DisplayWebViewBody
+import com.example.digitekademoappapplirossel.R
+import com.example.digitekademoappapplirossel.interfaces.WebviewPositionCallback
 import com.google.accompanist.web.AccompanistWebViewClient
 
-class ArticlePagerAdapter(private val articles: List<String>) : RecyclerView.Adapter<ArticleViewHolder>() {
+class ArticlePagerAdapter(private val articles: List<String>, private val positionCallback: WebviewPositionCallback) : RecyclerView.Adapter<ArticleViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val itemView = inflater.inflate(R.layout.viewpager_item, parent, false)
         val webViewClient = getWebViewClient()
 
-        return ArticleViewHolder(itemView, webViewClient)
+        return ArticleViewHolder(itemView, webViewClient, positionCallback)
     }
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
@@ -26,12 +29,12 @@ class ArticlePagerAdapter(private val articles: List<String>) : RecyclerView.Ada
     override fun getItemCount(): Int = articles.size
 }
 
-class ArticleViewHolder(itemView: View, private val webViewClient: AccompanistWebViewClient) : RecyclerView.ViewHolder(itemView) {
+class ArticleViewHolder(itemView: View, private val webViewClient: AccompanistWebViewClient, private val positionCallback: WebviewPositionCallback) : RecyclerView.ViewHolder(itemView) {
     private val composeView = itemView.findViewById<ComposeView>(R.id.composeView)
 
     fun bind(bodyHTML: String) {
         composeView.setContent {
-            DisplayWebViewBody(webViewClient, bodyHTML)
+            DisplayWebViewBody(webViewClient, bodyHTML, positionCallback)
         }
     }
 }
