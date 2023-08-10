@@ -33,7 +33,7 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
         modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
             saveWebView.let { state ->
                 state.value?.let {
-                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y.absoluteValue})"
+                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y})"
                     val fullScript = "$webviewPositionScript\n$positionScript"
                     it.evaluateJavascript(fullScript) { }
                 }
