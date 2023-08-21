@@ -1,5 +1,7 @@
 package com.example.digitekademoappapplirossel.compose
 
+import android.content.Context
+import android.view.View
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
@@ -14,10 +16,12 @@ import com.google.accompanist.web.AccompanistWebViewClient
 fun DisplayWebViewBody(
     webViewClient: AccompanistWebViewClient,
     body: String = "",
-    webviewPositionScript: String
+    webviewPositionScript: String,
+    context: Context,
+    fragmentView: View
 ) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        ArticleWebView(webViewClient, body, webviewPositionScript)
+        ArticleWebView(webViewClient, body, webviewPositionScript, context, fragmentView)
         HandlePaywall()
     }
 }

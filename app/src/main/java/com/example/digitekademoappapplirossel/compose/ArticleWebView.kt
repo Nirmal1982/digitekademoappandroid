@@ -1,7 +1,9 @@
 package com.example.digitekademoappapplirossel.compose
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Xml
+import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.compose.runtime.Composable
@@ -10,16 +12,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.core.widget.NestedScrollView
+import com.example.digitekademoappapplirossel.R
+import com.example.digitekademoappapplirossel.utils.DeviceScreenUtils.getPxFromDp
 import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
-import kotlin.math.absoluteValue
 
 const val MIMETYPE = "text/html; charset=UTF-8"
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, webviewPositionScript: String) {
+fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, webviewPositionScript: String, context: Context, fragmentView: View) {
+    var headerHeight = 0f
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
     val state = rememberWebViewStateWithHTMLData(
@@ -33,7 +38,14 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
         modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
             saveWebView.let { state ->
                 state.value?.let {
-                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y})"
+                    // Detect the nestedScrollView's height in px
+                    val nestedScrollView: NestedScrollView = fragmentView.findViewById(R.id.articleDetailNestedScrollView)
+                    val nestedScrollViewHeight = getPxFromDp(context, nestedScrollView.height.toFloat())
+
+                    // Detect the WebView's initial vertical position in px (same as initial position of the webview)
+                    if (headerHeight == 0f) headerHeight = layoutCoordinates.positionInWindow().y
+
+                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y}, $headerHeight, $nestedScrollViewHeight)"
                     val fullScript = "$webviewPositionScript\n$positionScript"
                     it.evaluateJavascript(fullScript) { }
                 }

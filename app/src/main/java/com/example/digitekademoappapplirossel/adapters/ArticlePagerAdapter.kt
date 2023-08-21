@@ -12,14 +12,14 @@ import com.example.digitekademoappapplirossel.R
 import com.example.digitekademoappapplirossel.compose.DisplayWebViewBody
 import com.google.accompanist.web.AccompanistWebViewClient
 
-class ArticlePagerAdapter(private val articles: List<String>) : RecyclerView.Adapter<ArticleViewHolder>() {
+class ArticlePagerAdapter(private val articles: List<String>, private val fragmentView: View) : RecyclerView.Adapter<ArticleViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val itemView = inflater.inflate(R.layout.viewpager_item, parent, false)
         val webViewClient = getWebViewClient()
 
-        return ArticleViewHolder(itemView, webViewClient, context)
+        return ArticleViewHolder(itemView, webViewClient, context, fragmentView)
     }
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
@@ -30,13 +30,13 @@ class ArticlePagerAdapter(private val articles: List<String>) : RecyclerView.Ada
     override fun getItemCount(): Int = articles.size
 }
 
-class ArticleViewHolder(itemView: View, private val webViewClient: AccompanistWebViewClient, private val context: Context) : RecyclerView.ViewHolder(itemView) {
+class ArticleViewHolder(itemView: View, private val webViewClient: AccompanistWebViewClient, private val context: Context, private val fragmentView: View) : RecyclerView.ViewHolder(itemView) {
     private val composeView = itemView.findViewById<ComposeView>(R.id.composeView)
 
     fun bind(bodyHTML: String) {
         val webviewPositionScript = loadWebviewPositionScript(context) // Load the JavaScript code from asset
         composeView.setContent {
-            DisplayWebViewBody(webViewClient, bodyHTML, webviewPositionScript)
+            DisplayWebViewBody(webViewClient, bodyHTML, webviewPositionScript, context, fragmentView)
         }
     }
 

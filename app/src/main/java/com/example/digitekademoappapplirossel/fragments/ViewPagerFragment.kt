@@ -25,7 +25,7 @@ class ViewPagerFragment : Fragment() {
         val viewPager = view.findViewById<ViewPager2>(R.id.viewPager)
         val articleList = listOf(bodyHTML, bodyHTML, bodyHTML)
 
-        viewPager.adapter = ArticlePagerAdapter(articleList)
+        viewPager.adapter = ArticlePagerAdapter(articleList, view)
     }
 }
 
