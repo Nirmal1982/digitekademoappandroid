@@ -42,7 +42,7 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
                     val nestedScrollView: NestedScrollView = fragmentView.findViewById(R.id.articleDetailNestedScrollView)
                     val nestedScrollViewHeight = getPxFromDp(context, nestedScrollView.height.toFloat())
 
-                    // Detect the WebView's initial vertical position in px (same as initial position of the webview)
+                    // Detect the height of the header in px (same as initial position of the webview)
                     if (headerHeight == 0f) headerHeight = layoutCoordinates.positionInWindow().y
 
                     val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y}, $headerHeight, $nestedScrollViewHeight)"
