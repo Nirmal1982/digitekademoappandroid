@@ -2,10 +2,12 @@ package com.example.digitekademoappapplirossel.compose
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.util.Xml
 import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.widget.LinearLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,7 +26,7 @@ const val MIMETYPE = "text/html; charset=UTF-8"
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, webviewPositionScript: String, context: Context, fragmentView: View) {
-    var headerHeight = 0f
+    var initialPosition = 0f
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
     val state = rememberWebViewStateWithHTMLData(
@@ -38,14 +40,22 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
         modifier = Modifier.onGloballyPositioned { layoutCoordinates ->
             saveWebView.let { state ->
                 state.value?.let {
-                    // Detect the nestedScrollView's height in px
-                    val nestedScrollView: NestedScrollView = fragmentView.findViewById(R.id.articleDetailNestedScrollView)
-                    val nestedScrollViewHeight = getPxFromDp(context, nestedScrollView.height.toFloat())
+                    //TODO Statusbar's height in px -> calculate it instead
+                    val statusBarHeight = getPxFromDp(context, 24f)
 
-                    // Detect the height of the header in px (same as initial position of the webview)
-                    if (headerHeight == 0f) headerHeight = layoutCoordinates.positionInWindow().y
+                    //TODO Toolbar's height in px -> calculate it instead
+                    val toolBarHeight = getPxFromDp(context, 70f)
 
-                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y}, $headerHeight, $nestedScrollViewHeight)"
+                    // Header's height in px
+                    val headerHeight: Int = fragmentView.findViewById<LinearLayout?>(R.id.breadcrumbContainer).height
+
+                    // NestedScrollView's height in px
+                    val nestedScrollViewHeight: Int = fragmentView.findViewById<NestedScrollView?>(R.id.articleDetailNestedScrollView).height
+
+                    // Detect the webview's initial position in px
+                    if (initialPosition == 0f) initialPosition = layoutCoordinates.positionInWindow().y - statusBarHeight - toolBarHeight
+
+                    val positionScript = "display_webview_position(${layoutCoordinates.positionInWindow().y - statusBarHeight - toolBarHeight}, $headerHeight, $nestedScrollViewHeight, $initialPosition)"
                     val fullScript = "$webviewPositionScript\n$positionScript"
                     it.evaluateJavascript(fullScript) { }
                 }
