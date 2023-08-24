@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:background="@color/purple_700"
+        android:background="#FF5722"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -35,7 +35,7 @@
         android:id="@+id/breadcrumbContainer2"
         android:layout_width="0dp"
         android:layout_height="70dp"
-        android:background="@color/purple_700"
+        android:background="#711ADB"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
