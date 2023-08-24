@@ -26,6 +26,9 @@ const val MIMETYPE = "text/html; charset=UTF-8"
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, webviewPositionScript: String, context: Context, fragmentView: View) {
+    var initialWebViewPosition = -1
+    var marginOfErrorOfPosition = 0
+
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
     val state = rememberWebViewStateWithHTMLData(
@@ -49,8 +52,6 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
                         toolBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.resources.displayMetrics)
                     }
 
-                    var initialPosition = -1 * (statusBarHeight + toolBarHeight) // Position before the header is rendered on screen
-
                     // Header's height in px
                     val headerHeight: Int = fragmentView.findViewById<LinearLayout?>(R.id.breadcrumbContainer).height
 
@@ -58,12 +59,15 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
                     val nestedScrollViewHeight: Int = fragmentView.findViewById<NestedScrollView?>(R.id.articleDetailNestedScrollView).height
 
                     // Calculate webview's current position in px
-                    val currentPosition = layoutCoordinates.positionInWindow().y.toInt() - statusBarHeight - toolBarHeight - 45 // Margin of error seems to be 45px
+                    val currentPosition = layoutCoordinates.positionInWindow().y.toInt() - statusBarHeight - toolBarHeight
 
-                    // Detect the webview's initial position in px
-                    if (initialPosition == -1 * (statusBarHeight + toolBarHeight)) initialPosition = currentPosition
+                    // Detect the webview's initial position in px and calculate margin of error
+                    if (initialWebViewPosition < 0) {
+                        initialWebViewPosition = currentPosition
+                        marginOfErrorOfPosition = initialWebViewPosition - headerHeight
+                    }
 
-                    val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $nestedScrollViewHeight, $initialPosition, $currentPosition)"
+                    val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $nestedScrollViewHeight, ${initialWebViewPosition - marginOfErrorOfPosition}, ${currentPosition - marginOfErrorOfPosition})"
                     val fullScript = "$webviewPositionScript\n$positionScript"
                     it.evaluateJavascript(fullScript) { }
                 }
