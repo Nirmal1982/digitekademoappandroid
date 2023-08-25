@@ -2,6 +2,7 @@ package com.example.digitekademoappapplirossel.compose
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.util.TypedValue
 import android.util.Xml
 import android.view.View
@@ -28,6 +29,10 @@ const val MIMETYPE = "text/html; charset=UTF-8"
 fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, webviewPositionScript: String, context: Context, fragmentView: View) {
     var initialWebViewPosition = -1
     var marginOfErrorOfPosition = 0
+
+    //variables added by Digiteka
+    var isPlayerLaunched = false;
+    var isScriptInProcess = false;
 
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
@@ -66,10 +71,22 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
                         initialWebViewPosition = currentPosition
                         marginOfErrorOfPosition = initialWebViewPosition - headerHeight
                     }
+                    //val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $nestedScrollViewHeight, ${initialWebViewPosition - marginOfErrorOfPosition}, ${currentPosition - marginOfErrorOfPosition})"
 
-                    val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $nestedScrollViewHeight, ${initialWebViewPosition - marginOfErrorOfPosition}, ${currentPosition - marginOfErrorOfPosition})"
-                    val fullScript = "$webviewPositionScript\n$positionScript"
-                    it.evaluateJavascript(fullScript) { }
+                    //Modified code by DIGITEKA
+                    if(!isPlayerLaunched && !isScriptInProcess){
+                        isScriptInProcess = true;
+                        val density = Resources.getSystem().getDisplayMetrics().density
+                        var newCurrentPosition = currentPosition / density
+                        var newInitialWebViewPosition = initialWebViewPosition / density
+                        var newNestedScrollViewHeight = nestedScrollViewHeight / density
+                        val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $newNestedScrollViewHeight, ${newInitialWebViewPosition}, ${newCurrentPosition},  ${isPlayerLaunched})"
+                        val fullScript = "$webviewPositionScript\n$positionScript"
+                        it.evaluateJavascript(fullScript) { value ->
+                            isPlayerLaunched = value.toBoolean()
+                            isScriptInProcess = false;
+                        }
+                    }
                 }
             }
         },
@@ -88,6 +105,7 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
                 isScrollContainer = true
                 isHapticFeedbackEnabled = false
             }
+
         },
         client = webClient
     )
