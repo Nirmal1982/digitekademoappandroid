@@ -12,7 +12,7 @@ function display_webview_position(statusBarHeight, toolBarHeight, headerHeight, 
            for (var m = 0; m < nodes.length; m++) {
                if ((nodes[m].hasAttribute("src") && nodes[m].getAttribute("src").match(/(ultimedia|digiteka)\.(com|net)/)) || (nodes[m].hasAttribute("data-src") && nodes[m].getAttribute("data-src").match(/(ultimedia|digiteka)\.(com|net)/))) {
                   const rect = nodes[m].getBoundingClientRect();
-                  var isVisible =  (rect.top + 75) < (initialWebViewPosition - currentWebViewPosition) + nestedScrollViewHeight
+                  var isVisible =  (rect.top + (nodes[m].offsetHeight / 2)) < (initialWebViewPosition - currentWebViewPosition) + nestedScrollViewHeight
                   if(isVisible){
                         nodes[m].contentWindow.postMessage('play', '*');
                         isPlayerLaunched = true;
