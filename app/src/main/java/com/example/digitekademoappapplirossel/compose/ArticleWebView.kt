@@ -21,6 +21,7 @@ import com.example.digitekademoappapplirossel.utils.DeviceScreenUtils.getPxFromD
 import com.google.accompanist.web.AccompanistWebViewClient
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewStateWithHTMLData
+import org.json.JSONObject
 
 const val MIMETYPE = "text/html; charset=UTF-8"
 
@@ -33,6 +34,7 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
     //variables added by Digiteka
     var isPlayerLaunched = false;
     var isScriptInProcess = false;
+    var closeSticky = false;
 
     val saveWebView = remember { mutableStateOf<WebView?>(null) }
     val webClient = remember { webViewClient }
@@ -74,16 +76,18 @@ fun ArticleWebView(webViewClient: AccompanistWebViewClient, bodyHTML: String, we
                     //val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $nestedScrollViewHeight, ${initialWebViewPosition - marginOfErrorOfPosition}, ${currentPosition - marginOfErrorOfPosition})"
 
                     //Modified code by DIGITEKA
-                    if(!isPlayerLaunched && !isScriptInProcess){
+                    if(!isScriptInProcess && !closeSticky){
                         isScriptInProcess = true;
                         val density = Resources.getSystem().getDisplayMetrics().density
                         var newCurrentPosition = currentPosition / density
                         var newInitialWebViewPosition = initialWebViewPosition / density
                         var newNestedScrollViewHeight = nestedScrollViewHeight / density
-                        val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $newNestedScrollViewHeight, ${newInitialWebViewPosition}, ${newCurrentPosition},  ${isPlayerLaunched})"
+                        val positionScript = "display_webview_position($statusBarHeight, $toolBarHeight, $headerHeight, $newNestedScrollViewHeight, ${newInitialWebViewPosition}, ${newCurrentPosition},  ${isPlayerLaunched}, ${closeSticky})"
                         val fullScript = "$webviewPositionScript\n$positionScript"
                         it.evaluateJavascript(fullScript) { value ->
-                            isPlayerLaunched = value.toBoolean()
+                            val jsonObject = JSONObject(value)
+                            isPlayerLaunched = jsonObject.getBoolean("isPlayerLaunched")
+                            closeSticky = jsonObject.getBoolean("closeSticky")
                             isScriptInProcess = false;
                         }
                     }
